@@ -98,7 +98,7 @@ const WORDS = ["Data Science & Big Data Analytics Student", "AI Enthusiast" , "D
 const TECH_STACK = ["Python" , "R", "SQL", "MongoDb", "TensorFlow", "Excel", "Power BI", "Tableau", "Looker Studio", "Seaborn"];
 const SOCIAL_LINKS = [
   { icon: Github, link: "https://github.com/AryanMithbawkar" },
-  { icon: Linkedin, link: "www.linkedin.com/in/aryanmithbawkar/" },
+  { icon: Linkedin, link: "https://www.linkedin.com/in/aryanmithbawkar/" },
   { icon: Instagram, link: "https://www.instagram.com/aron_wolverine/" },
 ];
 
