@@ -16,7 +16,7 @@ const TypewriterEffect = ({ text }) => {
       } else {
         clearInterval(timer);
       }
-    }, 110);
+    }, 105);
 
     return () => clearInterval(timer);
   }, [text]);
