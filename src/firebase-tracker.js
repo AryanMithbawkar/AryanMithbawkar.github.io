@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const MEASUREMENT_ID = "G-EEFVNJD2GC"; // Replace with your Measurement ID
 const API_SECRET = "yThycJ0mSMKoZ2WcwfMMgQ"; // Replace with your API Secret
-const GA_DEBUG_ENDPOINT = `https://www.google-analytics.com/debug/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
+const GA_ENDPOINT = `https://www.google-analytics.com/debug/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
 
 // Generate or retrieve session ID
 let sessionId = sessionStorage.getItem("sessionId");
