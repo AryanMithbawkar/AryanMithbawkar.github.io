@@ -2,7 +2,7 @@ import { db, collection, addDoc } from "./firebase.js";
 import { v4 as uuidv4 } from "uuid";
 
 const MEASUREMENT_ID = "G-EEFVNJD2GC"; // Replace with your Measurement ID
-const API_SECRET = "yThycJ0mSMKoZ2WcwfMMgQ"; // Replace with your API Secret
+const API_SECRET = "Beq0nJHZTRKcr9I0Ip9TdA"; // Replace with your API Secret
 const GA_ENDPOINT = `https://www.google-analytics.com/debug/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
 
 // Generate or retrieve session ID
