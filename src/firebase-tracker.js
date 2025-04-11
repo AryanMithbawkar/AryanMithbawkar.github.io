@@ -1,44 +1,86 @@
 import { db, collection, addDoc } from "./firebase.js";
 import { v4 as uuidv4 } from "uuid";
-import { sendToGA } from "./sendToGA.js"; // NEW LINE
 
+const MEASUREMENT_ID = "G-EEFVNJD2GC"; // Replace with your Measurement ID
+const API_SECRET = "yThycJ0mSMKoZ2WcwfMMgQ"; // Replace with your API Secret
+const GA_ENDPOINT = `https://www.google-analytics.com/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
+
+// Generate or retrieve session ID
 let sessionId = sessionStorage.getItem("sessionId");
 if (!sessionId) {
   sessionId = uuidv4();
   sessionStorage.setItem("sessionId", sessionId);
 }
 
+// Track page visit
 export async function trackVisit() {
+  const timestamp = new Date();
   try {
-    const visitData = {
-      sessionId: sessionId,
-      timestamp: new Date(),
-    };
+    // Store in Firestore
+    await addDoc(collection(db, "visits"), {
+      sessionId,
+      timestamp,
+    });
 
-    await addDoc(collection(db, "visits"), visitData);
+    // Send to Google Analytics
+    await sendToGA("page_visit", {
+      session_id: sessionId,
+      timestamp: timestamp.toISOString(),
+    });
+
     console.log("Page visit recorded with sessionId:", sessionId);
-
-    // Also send to Google Analytics
-    await sendToGA("page_visit", {}, sessionId);
   } catch (error) {
     console.error("Error tracking visit:", error);
   }
 }
 
+// Track button clicks
 export async function trackClick(buttonName) {
+  const timestamp = new Date();
   try {
-    const clickData = {
-      sessionId: sessionId,
-      timestamp: new Date(),
+    // Store in Firestore
+    await addDoc(collection(db, "clicks"), {
+      sessionId,
+      timestamp,
       button: buttonName,
-    };
+    });
 
-    await addDoc(collection(db, "clicks"), clickData);
+    // Send to Google Analytics
+    await sendToGA("button_click", {
+      session_id: sessionId,
+      button: buttonName,
+      timestamp: timestamp.toISOString(),
+    });
+
     console.log(`Click recorded for ${buttonName} with sessionId: ${sessionId}`);
-
-    // Also send to Google Analytics
-    await sendToGA("button_click", { button_name: buttonName }, sessionId);
   } catch (error) {
     console.error("Error tracking click:", error);
+  }
+}
+
+// Send event to Google Analytics
+async function sendToGA(eventName, params = {}) {
+  try {
+    const payload = {
+      client_id: sessionId, // required by GA4
+      events: [
+        {
+          name: eventName,
+          params: params,
+        },
+      ],
+    };
+
+    await fetch(GA_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    console.log(`Event '${eventName}' sent to GA4`);
+  } catch (error) {
+    console.error("Failed to send event to Google Analytics:", error);
   }
 }
