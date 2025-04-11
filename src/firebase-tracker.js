@@ -60,26 +60,33 @@ export async function trackClick(buttonName) {
 
 // Send event to Google Analytics
 async function sendToGA(eventName, params = {}) {
-  try {
-    const payload = {
-      client_id: sessionId, // required by GA4
-      events: [
-        {
-          name: eventName,
-          params: params,
-        },
-      ],
-    };
-
-    await fetch(GA_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  const body = {
+    client_id: sessionId, // unique user/session identifier
+    events: [
+      {
+        name: eventName,
+        params,
       },
-      body: JSON.stringify(payload),
-    });
+    ],
+  };
 
-    console.log(`Event '${eventName}' sent to GA4`);
+  try {
+    const response = await fetch(
+      `https://www.google-analytics.com/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("GA response not OK:", response.status, text);
+    }
+
   } catch (error) {
     console.error("Failed to send event to Google Analytics:", error);
   }
