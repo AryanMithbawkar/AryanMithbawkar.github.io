@@ -1,24 +1,22 @@
-import { db, analytics } from "./firebase.js";
-import { collection, addDoc } from "firebase/firestore";
-import { logEvent } from "firebase/analytics";
+import { db, collection, addDoc, analytics, logEvent } from "./firebase.js";
 import { v4 as uuidv4 } from "uuid";
 
+// Generate or retrieve session ID
 let sessionId = sessionStorage.getItem("sessionId");
 if (!sessionId) {
   sessionId = uuidv4();
   sessionStorage.setItem("sessionId", sessionId);
 }
 
+// Track page visit
 export async function trackVisit() {
   try {
-    const data = {
+    await addDoc(collection(db, "visits"), {
       sessionId: sessionId,
       timestamp: new Date(),
-    };
+    });
 
-    await addDoc(collection(db, "visits"), data);
-
-    // Also log to Google Analytics
+    // ✅ Also send to GA
     logEvent(analytics, "page_visit", {
       session_id: sessionId,
       timestamp: Date.now(),
@@ -30,17 +28,16 @@ export async function trackVisit() {
   }
 }
 
+// Track button clicks
 export async function trackClick(buttonName) {
   try {
-    const data = {
+    await addDoc(collection(db, "clicks"), {
       sessionId: sessionId,
       timestamp: new Date(),
       button: buttonName,
-    };
+    });
 
-    await addDoc(collection(db, "clicks"), data);
-
-    // Also log to Google Analytics
+    // ✅ Also send to GA
     logEvent(analytics, "button_click", {
       session_id: sessionId,
       button_name: buttonName,
