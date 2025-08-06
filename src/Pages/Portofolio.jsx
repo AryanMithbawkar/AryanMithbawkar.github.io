@@ -132,7 +132,7 @@ export default function FullWidthTabs() {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [showAllCertificates, setShowAllCertificates] = useState(false);
   const isMobile = window.innerWidth < 768;
-  const initialItems = isMobile ? 4 : 6;
+  const initialItems = isMobile ? 6 : 9;
 
   useEffect(() => {
     // Initialize AOS once
